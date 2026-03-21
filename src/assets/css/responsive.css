@@ -1,0 +1,182 @@
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1199px) {
+    .stats-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 991px) {
+    :root {
+        --sidebar-width: 80px;
+    }
+    
+    .sidebar {
+        width: var(--sidebar-width);
+    }
+    
+    .logo-text,
+    .sidebar-nav .nav-link span {
+        display: none;
+    }
+    
+    .sidebar-nav .nav-link {
+        justify-content: center;
+        padding: 16px 10px;
+    }
+    
+    .sidebar-nav .nav-link i {
+        margin: 0;
+    }
+    
+    .main-content,
+    .top-header {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --sidebar-width: 0;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .main-content,
+    .top-header {
+        margin-left: 0;
+    }
+    
+    .main-content {
+        padding: 20px 15px;
+    }
+    
+    .stats-card {
+        margin-bottom: 16px;
+    }
+    
+    .chart-filters {
+        width: 100%;
+    }
+    
+    .chart-filters .form-select {
+        flex: 1;
+    }
+}
+
+@media (max-width: 575px) {
+    .page-title {
+        font-size: 18px;
+    }
+    
+    .user-email {
+        display: none;
+    }
+    
+    .stats-number {
+        font-size: 24px;
+    }
+    
+    .card-header {
+        padding: 16px;
+    }
+    
+    .card-body {
+        padding: 16px;
+    }
+}
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 1199px) {
+    .stats-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 991px) {
+    :root {
+        --sidebar-width: 80px;
+    }
+    
+    .sidebar {
+        width: var(--sidebar-width);
+    }
+    
+    .logo-text,
+    .sidebar-nav .nav-link span {
+        display: none;
+    }
+    
+    .sidebar-nav .nav-link {
+        justify-content: center;
+        padding: 16px 10px;
+    }
+    
+    .sidebar-nav .nav-link i {
+        margin: 0;
+    }
+    
+    .main-content,
+    .top-header {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --sidebar-width: 0;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .main-content,
+    .top-header {
+        margin-left: 0;
+    }
+    
+    .main-content {
+        padding: 20px 15px;
+    }
+    
+    .stats-card {
+        margin-bottom: 16px;
+    }
+    
+    .chart-filters {
+        width: 100%;
+    }
+    
+    .chart-filters .form-select {
+        flex: 1;
+    }
+}
+
+@media (max-width: 575px) {
+    .page-title {
+        font-size: 18px;
+    }
+    
+    .user-email {
+        display: none;
+    }
+    
+    .stats-number {
+        font-size: 24px;
+    }
+    
+    .card-header {
+        padding: 16px;
+    }
+    
+    .card-body {
+        padding: 16px;
+    }
+}
