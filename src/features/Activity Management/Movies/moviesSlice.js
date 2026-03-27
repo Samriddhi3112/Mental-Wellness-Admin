@@ -42,7 +42,7 @@ export const uploadFileToS3 = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       const presignedData = presignedRes.data?.data;
@@ -61,20 +61,23 @@ export const uploadFileToS3 = createAsyncThunk(
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       // get uploaded file URL from response
-      const fileUrl = uploadRes.data?.data?.fileUrl || uploadRes.data?.data?.url;
+      const fileUrl =
+        uploadRes.data?.data?.fileUrl || uploadRes.data?.data?.url;
       if (!fileUrl) throw new Error("File URL not returned from upload API");
 
       console.log("Uploaded File URL:", fileUrl);
       return fileUrl;
     } catch (err) {
       console.error("Upload Error:", err);
-      return rejectWithValue(err.response?.data || err.message || "Upload failed");
+      return rejectWithValue(
+        err.response?.data || err.message || "Upload failed",
+      );
     }
-  }
+  },
 );
 
 // CREATE MOVIE
@@ -102,21 +105,43 @@ export const createMovie = createAsyncThunk(
   },
 );
 
+export const getMovieById = createAsyncThunk(
+  "movies/getMovieById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(`${credAndUrl.BASE_URL}/admin/movies/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Fetch failed");
+    }
+  },
+);
+
 export const deleteMovie = createAsyncThunk(
   "movies/deleteMovie",
   async (id, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.delete(`${credAndUrl.BASE_URL}/admin/movies/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const res = await axios.delete(
+        `${credAndUrl.BASE_URL}/admin/movies/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
-      return id; 
+      );
+      return id;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Delete failed");
     }
-  }
+  },
 );
 
 const moviesSlice = createSlice({
@@ -159,6 +184,19 @@ const moviesSlice = createSlice({
       })
       .addCase(deleteMovie.rejected, (state) => {
         state.loading = false;
+      })
+
+      .addCase(getMovieById.pending, (state) => {
+        state.loading = true;
+        state.movieDetail = null;
+      })
+      .addCase(getMovieById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.movieDetail = action.payload?.data || null;
+      })
+      .addCase(getMovieById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

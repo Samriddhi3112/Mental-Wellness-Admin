@@ -108,6 +108,7 @@ import NotificationListing from "../features/Notification Management/Notificatio
 import ProfileDetails from "../features/Profile/ProfileDetails";
 
 import { Navigate } from "react-router-dom";
+import MoviesDetail from "../pages/Activity Management/Activity Types/Movies/MoviesDetail";
 
 const AppRoutes = [
   // 🔓 Public Routes
@@ -202,65 +203,70 @@ const AppRoutes = [
           {
             path: "/activity-management/games",
             element: <GamesListing />,
-            handle: { title: "Mindful Games" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/movies",
             element: <MoviesListing />,
-            handle: { title: "Movies" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/movies/upload",
             element: <UploadMovie />,
-            handle: { title: "Upload Movie" },
+            handle: { title: "Activity Management" },
           },
 
           {
             path: "/activity-management/calm-music",
             element: <FetchMusic />,
-            handle: { title: "Calm Music" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/calm-music/listing",
             element: <MusicListing />,
-            handle: { title: "Music Listing" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/calm-music/upload",
             element: <MusicUpload />,
-            handle: { title: "Upload Music" },
+            handle: { title: "Activity Management" },
           },
 
           {
             path: "/activity-management/wise-yogi",
             element: <YogiListing />,
-            handle: { title: "Wise Yogi" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/wise-yogi/add-yogi",
             element: <AddYogi />,
-            handle: { title: "Add Yogi" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/wise-yogi/edit-yogi/:id",
             element: <EditYogi />,
-            handle: { title: "Edit Yogi" },
+            handle: { title: "Activity Management" },
           },
 
           {
             path: "/activity-management/healthListing",
             element: <HealthIsWealthListing />,
-            handle: { title: "Health Is Wealth" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/healthListing/add-health",
             element: <HealthIsWealthListing />,
-            handle: { title: "Add Health Content" },
+            handle: { title: "Activity Management" },
           },
           {
             path: "/activity-management/healthListing/edit-health/:id",
             element: <HealthIsWealthListing />,
-            handle: { title: "Edit Health Content" },
+            handle: { title: "Activity Management" },
+          },
+          {
+            path: "/activity-management/movies/detail-movies/:id",
+            element: <MoviesDetail />,
+            handle: { title: "Activity Management" },
           },
         ],
       },

@@ -23,7 +23,7 @@ const AddYogi = () => {
     fileUrl: "",
     focusPersonas: [],
     language: "",
-    price: 0,
+    price: "",
     pricingTier: "free",
     tags: [],
   });
@@ -133,7 +133,7 @@ const AddYogi = () => {
         <div className="py-4">
           <form onSubmit={handleSubmit}>
             <div className="add-new-card">
-              <h2 className="form-heading">Add Wise Yogi</h2>
+              <h2 className="form-heading">Add New</h2>
 
               {/* Basic Info */}
               <div className="form-group">
@@ -192,7 +192,7 @@ const AddYogi = () => {
               </div>
 
               <div className="form-group">
-                <label>Description</label>
+                <label>About this activity (Description)</label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -203,7 +203,7 @@ const AddYogi = () => {
               </div>
 
               <div className="form-group">
-                <label>Requirements</label>
+                <label>What you'll need</label>
                 <input
                   type="text"
                   name="requirements"
@@ -413,7 +413,7 @@ const AddYogi = () => {
               </div>
 
               <button type="submit" className="btn btn-orange mt-4">
-                Update Video
+                Submit
               </button>
             </div>
           </form>

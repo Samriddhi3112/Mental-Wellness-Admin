@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Footer from "../../layout/Footer";
 import logo from "../../assets/images/auth-logo.png";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { adminLogin } from "../../features/auth/authSlice";
 import { toast } from "react-toastify";
+import topBg from "../../assets/images/auth-bg-top-left.png";
+import bottomBg from "../../assets/images/auth-bg-bottom-right.png";
 
 const login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { loading, error } = useSelector((state) => state.auth);
 
@@ -26,6 +29,21 @@ const login = () => {
   };
 
   const handleLogin = async () => {
+    if (!formData.email) {
+      toast.error("Email is required");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
+
+    if (!formData.password) {
+      toast.error("Password is required");
+      return;
+    }
     const result = await dispatch(adminLogin(formData));
 
     console.log("Login result:", result);
@@ -41,13 +59,19 @@ const login = () => {
         const admin = data?.data?.admin;
 
         localStorage.setItem("token", token);
-
         localStorage.setItem("userId", admin?.id);
-
         localStorage.setItem("userData", JSON.stringify(admin));
 
+        if (rememberMe) {
+          localStorage.setItem("rememberEmail", formData.email);
+          localStorage.setItem("rememberPassword", formData.password);
+        } else {
+          localStorage.removeItem("rememberEmail");
+          localStorage.removeItem("rememberPassword");
+        }
+
         toast.success("Login successful");
-        navigate("/dashboard");
+        navigate("/dashboard",{ replace: true });
       } else {
         toast.error(data?.message || "Login failed");
       }
@@ -57,10 +81,34 @@ const login = () => {
     }
   };
 
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberEmail");
+    const savedPassword = localStorage.getItem("rememberPassword");
+
+    if (savedEmail && savedPassword) {
+      setFormData({
+        email: savedEmail,
+        password: savedPassword,
+      });
+      setRememberMe(true);
+    }
+  }, []);
+
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    navigate("/dashboard", { replace: true });
+  }
+}, []);
+
   return (
     <div>
       <div className="auth-container">
-        <div className="auth-background-left" />
+        <div
+          className="auth-background-left"
+          style={{ backgroundImage: `url(${topBg})` }}
+        ></div>
         <div className="auth-card">
           <div className="auth-logo">
             <img src={logo} alt="" />
@@ -127,8 +175,20 @@ const login = () => {
                 </span>
               </div>
             </div>
+            <div className="form-check mb-4">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="rememberMe">
+                Remember this device
+              </label>
+            </div>
 
-            {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
+            {/* {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>} */}
 
             <button
               type="button"
@@ -143,6 +203,19 @@ const login = () => {
       </div>
 
       <Footer />
+      <div
+        style={{
+          position: "absolute",
+          right: "-90px",
+          bottom: "-2px",
+          width: "300px",
+          height: "300px",
+          backgroundImage: `url(${bottomBg})`,
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          zIndex: 0,
+        }}
+      ></div>
     </div>
   );
 };

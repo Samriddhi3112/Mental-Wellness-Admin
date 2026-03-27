@@ -1,37 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMovie, fetchMovies } from "../../../../features/Activity Management/Movies/moviesSlice";
+import {
+  deleteMovie,
+  fetchMovies,
+} from "../../../../features/Activity Management/Movies/moviesSlice";
 import img1 from "../../../../assets/images/activity-one.png";
 import img2 from "../../../../assets/images/activity-two.png";
 import img3 from "../../../../assets/images/activity-three.png";
 import img4 from "../../../../assets/images/activity-four.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import placeholder from "../../../../assets/images/alt Image.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import DeleteModal from "../../../../components/DeleteModal";
 
 const MoviesListing = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("all");
-  const { movies } = useSelector((state) => state.movies);
+  const { movies = [] } = useSelector((state) => state.movies);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedMovieId, setSelectedMovieId] = useState(null);
 
-  // Fetch movies on mount
   useEffect(() => {
     dispatch(fetchMovies());
   }, [dispatch]);
 
-  // Delete handler
   const handleDeleteClick = (id) => {
     setSelectedMovieId(id);
     setShowDeleteModal(true);
   };
 
-  // Filter movies by category
+  const handleConfirmDelete = () => {
+    dispatch(deleteMovie(selectedMovieId));
+    setShowDeleteModal(false);
+  };
+
   const getMoviesByCategory = (category) => {
-    if (!movies || movies.length === 0) return [];
     if (category === "all") return movies;
     return movies.filter(
       (item) =>
@@ -42,144 +47,117 @@ const MoviesListing = () => {
 
   const tabs = ["all", "relaxation", "meditation", "sleep", "mindfulness"];
 
-  const handleConfirmDelete = () => {
-    console.log("Delete ID:", selectedMovieId);
-
-    dispatch(deleteMovie(selectedMovieId))
-
-    setShowDeleteModal(false);
-  };
-
   return (
     <main className="main-content">
       <div className="container-fluid">
-        <div className="p-4">
-          {/* Stats */}
-          <div className="row g-4 mb-4">
-            <div className="col-md-3">
-              <div className="stats shadow-sm">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <img src={img1} alt="" />
-                </div>
-                <div className="display-6 fw-bold">{movies.length}</div>
-                <div className="sub-title">Total Videos</div>
-              </div>
-            </div>
-
-            <div className="col-md-3">
-              <div className="stats shadow-sm">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <img src={img2} alt="" />
-                </div>
-                <div className="display-6 fw-bold">0</div>
-                <div className="sub-title">Published</div>
-              </div>
-            </div>
-
-            <div className="col-md-3">
-              <div className="stats shadow-sm">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <img src={img3} alt="" />
-                </div>
-                <div className="display-6 fw-bold">
-                  {movies.filter((m) => m.pricingTier !== "free").length}
-                </div>
-                <div className="sub-title">In Review</div>
-              </div>
-            </div>
-
-            <div className="col-md-3">
-              <div className="stats shadow-sm">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <img src={img4} alt="" />
-                </div>
-                <div className="display-6 fw-bold">
-                  {movies.filter((m) => m.pricingTier !== "free").length}
-                </div>
-                <div className="sub-title">Draft</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="video-tabs-wrapper d-flex align-items-center justify-content-between mb-4">
-            <ul className="nav nav-tabs mb-4" id="videoTab" role="tablist">
-              {tabs.map((tab) => (
-                <li className="nav-item" key={tab}>
-                  <button
-                    className={`nav-link ${activeTab === tab ? "active" : ""}`}
-                    onClick={() => setActiveTab(tab)}
-                    role="tab"
-                    aria-selected={activeTab === tab}
-                  >
-                    {tab === "all"
-                      ? "All Videos"
-                      : tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="d-flex gap-2">
-              {/* <select
-                className="form-select form-select-sm"
-                style={{ width: 150 }}
-              >
-                <option>All Status</option>
-              </select> */}
-
-              <NavLink
-                to="/activity-management/movies/upload"
-                className="btn btn-primary btn-sm d-bl"
-                style={{
-                  width: 150,
-                  borderColor: "var(--primary-color)",
-                  borderRadius: "8px",
-                  fontWeight: "600",
-                  padding: "10px 20px",
-                  transition: " var(--transition)",
-                  fontSize: "14px",
-                }}
-              >
-                + Upload Video
-              </NavLink>
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <div className="tab-content">
-            {tabs.map((tab) => {
-              const data = getMoviesByCategory(tab);
-              return (
+        <div className="p-3">
+          <div className="row g-3 mb-3">
+            {[
+              {
+                img: img1,
+                value: movies.length,
+                label: "Total Videos",
+              },
+              {
+                img: img2,
+                value: 0,
+                label: "Published",
+              },
+              {
+                img: img3,
+                value: movies.filter((m) => m.pricingTier !== "free").length,
+                label: "In Review",
+              },
+              {
+                img: img4,
+                value: movies.filter((m) => m.pricingTier !== "free").length,
+                label: "Draft",
+              },
+            ].map((stat, i) => (
+              <div className="col-md-3" key={i}>
                 <div
-                  key={tab}
-                  className={`tab-pane fade ${
-                    activeTab === tab ? "show active" : ""
-                  }`}
+                  className="shadow-sm"
+                  style={{
+                    padding: "14px",
+                    borderRadius: "10px",
+                    background: "#fff",
+                  }}
                 >
-                  <div className="row g-4">
-                    {data.length > 0 ? (
-                      data.map((item) => (
-                        <Card
-                          item={item}
-                          key={item._id}
-                          onDelete={() => handleDeleteClick(item._id)}
-                        />
-                      ))
-                    ) : (
-                      <div className="col-12 text-center py-5">
-                        <h6 className="text-muted">No data found</h6>
-                      </div>
-                    )}
+                  <img src={stat.img} alt="" style={{ width: 26 }} />
+                  <div style={{ fontSize: "20px", fontWeight: "600" }}>
+                    {stat.value}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#777" }}>
+                    {stat.label}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
+          </div>
+
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    padding: "5px 12px",
+                    fontSize: "12px",
+                    borderRadius: "20px",
+                    border: "none",
+                    backgroundColor: activeTab === tab ? "#1f2a44" : "#f3f4f6",
+                    color: activeTab === tab ? "#fff" : "#444",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                  }}
+                >
+                  {tab === "all"
+                    ? "All Videos"
+                    : tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            <NavLink
+              to="/activity-management/movies/upload"
+              style={{
+                backgroundColor: "#ff511a",
+                color: "#fff",
+                padding: "7px 14px",
+                borderRadius: "6px",
+                fontSize: "13px",
+                fontWeight: "500",
+                textDecoration: "none",
+              }}
+            >
+              + Upload Video
+            </NavLink>
+          </div>
+
+          <div className="row g-3">
+            {getMoviesByCategory(activeTab).length > 0 ? (
+              getMoviesByCategory(activeTab).map((item) => (
+                <Card
+                  key={item._id}
+                  item={item}
+                  onDelete={() => handleDeleteClick(item._id)}
+                  onClick={() =>
+                    navigate(
+                      `/activity-management/movies/detail-movies/${item._id}`,
+                    )
+                  }
+                />
+              ))
+            ) : (
+              <div className="text-center py-5">
+                <h6 style={{ color: "#888" }}>No data found</h6>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Delete Modal */}
       <DeleteModal
         show={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
@@ -190,61 +168,95 @@ const MoviesListing = () => {
   );
 };
 
-// Reusable Card
-const Card = ({ item, onDelete }) => (
+const Card = ({ item, onDelete, onClick }) => (
   <div className="col-md-4">
-    <div className="video-card position-relative overflow-hidden">
-      <div className="video-thumbnail position-relative">
+    <div
+      onClick={onClick} // ✅ ADD THIS
+      style={{
+        borderRadius: "12px",
+        overflow: "hidden",
+        background: "#fff",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+        cursor: "pointer", // ✅ UX improve
+      }}
+    >
+      <div style={{ position: "relative" }}>
         <img
-          style={{ height: "247px" }}
           src={item.thumbnail || placeholder}
-          alt={item.activityName || "Movie Thumbnail"}
-          className="w-100"
+          alt=""
+          style={{
+            width: "100%",
+            height: "200px",
+            objectFit: "cover",
+          }}
           onError={(e) => (e.currentTarget.src = placeholder)}
         />
 
-        {/* Top-left badges */}
-        <div className="position-absolute top-0 start-0 p-2 d-flex gap-2">
+        {/* badges */}
+        <div
+          style={{
+            position: "absolute",
+            top: 8,
+            left: 8,
+            display: "flex",
+            gap: 6,
+          }}
+        >
           <span className="badge bg-success">Live</span>
           {item.pricingTier && (
-            <span className="badge bg-light text-dark text-capitalize">
-              {item.pricingTier}
-            </span>
+            <span className="badge bg-light text-dark">{item.pricingTier}</span>
           )}
         </div>
 
+        {/* delete */}
         <div
-          onClick={onDelete}
-          title="Delete"
+          onClick={(e) => {
+            e.stopPropagation(); 
+            onDelete();
+          }}
           style={{
-            cursor: "pointer",
-            width: "30px",
-            height: "30px",
-            borderRadius: "50%",
-            backgroundColor: "#ff511a",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
             position: "absolute",
-            top: "8px",
-            right: "8px",
+            top: 8,
+            right: 8,
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "#ff511a",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
           }}
         >
-          <FontAwesomeIcon icon={faTrash} color="white" size="sm" />
+          <FontAwesomeIcon icon={faTrash} color="#fff" size="sm" />
         </div>
 
-        {/* Duration */}
+        {/* duration */}
         {item.duration && (
-          <div className="position-absolute bottom-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded">
+          <div
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 8,
+              background: "#000",
+              color: "#fff",
+              padding: "2px 6px",
+              borderRadius: "4px",
+              fontSize: "11px",
+            }}
+          >
             {item.duration}
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="p-3">
-        <h6 className="mb-1">{item.activityName}</h6>
-        <p className="mb-0 text-muted">{item.description}</p>
+      <div style={{ padding: "10px" }}>
+        <h6 style={{ fontSize: "14px", marginBottom: "4px" }}>
+          {item.activityName}
+        </h6>
+        <p style={{ fontSize: "12px", color: "#777", margin: 0 }}>
+          {item.description}
+        </p>
       </div>
     </div>
   </div>

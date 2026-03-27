@@ -28,15 +28,15 @@ const UserHeader = () => {
               </div>
             )}
 
-            {userDetail?.user.riskLevel && (
+            {/* {userDetail?.user.riskLevel && (
               <div className="usertag usertag-anxiety">
                 <i className="fa-solid fa-wind" /> {userDetail.user.riskLevel}
               </div>
-            )}
+            )} */}
 
-            <div className="usertag usertag-normal">
+            {/* <div className="usertag usertag-normal">
               {userDetail?.user.status || "N/A"}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

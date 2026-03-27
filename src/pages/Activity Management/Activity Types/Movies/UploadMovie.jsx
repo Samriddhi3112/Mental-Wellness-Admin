@@ -400,7 +400,7 @@ const UploadMovie = () => {
 
           {/* SUBMIT */}
           <div className="text-end mt-3">
-            <button className="btn btn-primary" onClick={handleSubmit} disabled={videoUploading}>
+            <button className="btn btn-primary" onClick={handleSubmit} disabled={videoUploading} style={{border:"none"}}>
               Submit for Review
             </button>
           </div>

@@ -24,7 +24,7 @@ const EditYogi = () => {
     fileUrl: "",
     focusPersonas: [],
     language: "",
-    price: 0,
+    price: "",
     pricingTier: "free",
     tags: [],
   });
@@ -101,7 +101,7 @@ const EditYogi = () => {
         fileUrl: formData.fileUrl,
         focusPersonas: formData.focusPersonas,
         language: formData.language,
-        price: formData.price,
+        price: Number(formData.price),
         pricingTier: formData.pricingTier,
         tags: formData.tags,
       };
@@ -124,7 +124,7 @@ const EditYogi = () => {
         <div className="py-4">
           <form onSubmit={handleSubmit}>
             <div className="add-new-card">
-              <h2 className="form-heading">Edit Wise Yogi</h2>
+              <h2 className="form-heading">Edit Details</h2>
 
               {/* Basic Info */}
               <div className="form-group">

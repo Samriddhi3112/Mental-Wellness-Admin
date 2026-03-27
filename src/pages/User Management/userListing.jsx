@@ -4,7 +4,7 @@ import {
   fetchUsers,
   setPage,
   toggleBlockUsers,
-  exportUsers
+  exportUsers,
 } from "../../features/User Management/userSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -88,12 +88,33 @@ const UserListing = () => {
     });
   };
 
+  const mainFocusMap = {
+    sleep: {
+      label: "Sleep",
+      icon: "fa-solid fa-moon",
+      color: "#6f42c1", // purple
+    },
+    stress: {
+      label: "Stress",
+      icon: "fa-solid fa-bolt",
+      color: "#0d6efd", // blue
+    },
+    anxiety: {
+      label: "Anxiety",
+      icon: "fa-solid fa-brain",
+      color: "#fd7e14", // orange (good for anxiety)
+    },
+    not_sure: {
+      label: "Not Sure",
+      icon: "fa-solid fa-circle-question",
+      color: "#6c757d", // grey
+    },
+  };
+
   const handleBulkAction = async () => {
     if (selectedUsers.length === 0) return;
 
     const isBlocking = filters.status !== "blocked";
-    // active -> block true
-    // blocked -> block false
 
     try {
       await dispatch(
@@ -111,7 +132,7 @@ const UserListing = () => {
 
       setSelectedUsers([]);
 
-      dispatch(fetchUsers(buildPayload())); // use same payload
+      dispatch(fetchUsers(buildPayload()));
     } catch (err) {
       toast.error(err || "Action failed");
     }
@@ -179,7 +200,7 @@ const UserListing = () => {
             <div className="br-12 border bg-white d-inline-block searchbar">
               <input
                 type="text"
-                placeholder="Search by name or email"
+                placeholder="Search by name"
                 className="w-100 searchinput"
                 value={search}
                 onChange={handleSearchChange}
@@ -215,6 +236,7 @@ const UserListing = () => {
               <option value="">Language</option>
               <option value="english">English</option>
               <option value="hindi">Hindi</option>
+              <option value="spanish">Spanish</option>
             </select>
             <select
               name="mainFocus"
@@ -302,7 +324,7 @@ const UserListing = () => {
                     onChange={handleSelectAll}
                   />
                 </th>
-                <th>Admin</th>
+                <th>User</th>
                 <th>Age/Gender</th>
                 <th>Language</th>
                 <th>Main Focus</th>
@@ -357,9 +379,7 @@ const UserListing = () => {
                     </td>
                     <td>
                       <div className="d-flex align-items-center gap-2">
-                        <p className="fw-400 f-12 m-0 p-grey">
-                          {user.ageRange}
-                        </p>
+                        <p className="fw-400 f-12 m-0 p-grey">{user.age}</p>
                         <i className="fa-solid fa-circle f-grey f-6" />
                         <p className="fw-400 f-12 m-0 p-grey">{user.gender}</p>
                       </div>
@@ -368,7 +388,23 @@ const UserListing = () => {
                       <p className="fw-400 f-12 m-0 p-grey">{user.language}</p>
                     </td>
                     <td>
-                      <p className="fw-400 f-12 m-0">{user.mainFocus}</p>
+                      <div className="d-flex align-items-center gap-2">
+                        <i
+                          className={
+                            mainFocusMap[user.mainFocus]?.icon ||
+                            "fa-solid fa-circle"
+                          }
+                          style={{
+                            color:
+                              mainFocusMap[user.mainFocus]?.color || "#999",
+                            fontSize: "12px",
+                          }}
+                        />
+                        <p className="fw-400 f-12 m-0">
+                          {mainFocusMap[user.mainFocus]?.label ||
+                            user.mainFocus}
+                        </p>
+                      </div>
                     </td>
                     {/* <td>
                       <p className="fw-400 f-12 m-0">{user.riskLevel}</p>
